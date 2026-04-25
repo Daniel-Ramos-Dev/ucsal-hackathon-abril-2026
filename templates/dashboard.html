@@ -1,49 +1,20 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AirSense · Dashboard</title>
+  <title>AirSense</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header class="topbar">
-  <div class="topbar-brand">
-    <div class="brand-icon">🌬️</div>
-    <span class="brand-name">Air<span>Sense</span></span>
-  </div>
-  <div style="display: flex; gap: 15px; align-items: center;">
-    <span class="topbar-env">Ecolytixr</span>
-    <a href="login.html" style="color: white; text-decoration: none; font-weight: bold; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 5px;">Sair</a>
-  </div>
-</header>
+<h2>AirSense Dashboard</h2>
 
-<main class="dashboard-wrapper">
-  <div class="dashboard-content">
+<h3>Status: <span id="status">--</span></h3>
 
-    <div class="dashboard-header">
-      <h2>AirSense Dashboard</h2>
-      <p>Monitoramento de qualidade do ar em tempo real.</p>
-    </div>
+<h4>Tempo Real</h4>
+<canvas id="graficoTempo"></canvas>
 
-
-    <h3>Status:&nbsp;<span id="status">--</span></h3>
-
-    <div class="charts-grid">
-      <div class="chart-card">
-        <h4>Tempo Real</h4>
-        <canvas id="graficoTempo"></canvas>
-      </div>
-      <div class="chart-card">
-        <h4>Histórico</h4>
-        <canvas id="graficoHistorico"></canvas>
-      </div>
-    </div>
-
-  </div>
-</main>
+<h4>Histórico</h4>
+<canvas id="graficoHistorico"></canvas>
 
 <script src="/static/js/tempo_real.js"></script>
 <script src="/static/js/historico.js"></script>
