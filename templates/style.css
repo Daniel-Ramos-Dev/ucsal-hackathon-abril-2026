@@ -1,55 +1,40 @@
-/* ============================================================
-   EcoCircular · AirSense — Stylesheet
-   Paleta: #3A4D39 · #618264 · #79AC78 · #B0D9B1 + branco
-   Tema: Botanical Dark · Orgânico · Editorial
-   ============================================================ */
-
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Mono:wght@300;400;500&display=swap');
 
-/* ── Variáveis ─────────────────────────────────────────────── */
 :root {
-  /* Paleta fornecida */
   --green-deep:    #3A4D39;
   --green-mid:     #618264;
   --green-light:   #79AC78;
   --green-pale:    #B0D9B1;
 
-  /* Fundos (mais escuros para criar profundidade) */
   --bg-base:       #1c2a1b;
   --bg-surface:    #243023;
   --bg-card:       #2e3d2d;
   --bg-card-hover: #364a35;
   --bg-input:      #1f2c1e;
 
-  /* Branco e variantes */
   --white:         #ffffff;
   --white-95:      rgba(255, 255, 255, 0.95);
   --white-12:      rgba(255, 255, 255, 0.12);
   --white-06:      rgba(255, 255, 255, 0.06);
 
-  /* Texto */
   --text-primary:   #f0f7f0;
   --text-secondary: #B0D9B1;
   --text-muted:     #618264;
   --text-dark:      #2e3d2d;
 
-  /* Bordas */
   --border:        rgba(176, 217, 177, 0.13);
   --border-mid:    rgba(176, 217, 177, 0.28);
   --border-focus:  rgba(176, 217, 177, 0.55);
 
-  /* Âmbar — complementar quente para micro-detalhes */
   --warm:          #c8a96e;
   --warm-dim:      rgba(200, 169, 110, 0.14);
 
-  /* Raios */
   --radius-xs: 4px;
   --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 22px;
   --radius-xl: 32px;
 
-  /* Fontes */
   --font-display: 'Fraunces', Georgia, serif;
   --font-mono:    'DM Mono', 'Courier New', monospace;
 
@@ -57,10 +42,8 @@
   --transition: all 0.24s var(--ease);
 }
 
-/* ── Reset ─────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── Base ──────────────────────────────────────────────────── */
 html { font-size: 16px; -webkit-font-smoothing: antialiased; }
 
 body {
@@ -76,7 +59,6 @@ body {
     radial-gradient(ellipse 40% 35% at 55% 50%, rgba(176,217,177,0.04) 0%, transparent 70%);
 }
 
-/* Grão orgânico de fundo */
 body::before {
   content: '';
   position: fixed;
@@ -86,7 +68,6 @@ body::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='0.038'/%3E%3C/svg%3E");
 }
 
-/* ── Tipografia ────────────────────────────────────────────── */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   line-height: 1.15;
@@ -96,10 +77,6 @@ h2 { font-size: clamp(1.7rem, 3vw, 2.4rem); font-weight: 600; }
 h3 { font-size: 1.15rem; font-weight: 400; }
 h4 { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em;
      text-transform: uppercase; font-family: var(--font-mono); }
-
-/* ─────────────────────────────────────────────────────────────
-   LOGIN PAGE
-   ───────────────────────────────────────────────────────── */
 
 .login-wrapper {
   min-height: 100vh;
@@ -111,7 +88,6 @@ h4 { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em;
   z-index: 1;
 }
 
-/* Anéis decorativos no canto */
 .login-wrapper::after {
   content: '';
   position: fixed;
@@ -129,7 +105,6 @@ h4 { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em;
   to { transform: rotate(360deg); }
 }
 
-/* Card branco ─ destaque visual sobre o fundo escuro */
 .login-card {
   background: var(--white);
   border-radius: var(--radius-xl);
@@ -146,7 +121,6 @@ h4 { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em;
   color: var(--text-dark);
 }
 
-/* Barra de cor no topo do card */
 .login-card::before {
   content: '';
   position: absolute;
@@ -161,7 +135,6 @@ h4 { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em;
   to   { opacity: 1; transform: translateY(0)   scale(1); }
 }
 
-/* Logo */
 .login-logo {
   display: flex;
   align-items: center;
@@ -197,7 +170,6 @@ h4 { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em;
   margin-bottom: 2.2rem;
 }
 
-/* Form */
 .login-card form {
   display: flex;
   flex-direction: column;
@@ -218,7 +190,6 @@ h4 { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em;
   font-weight: 500;
 }
 
-/* Inputs */
 input[type="text"],
 input[type="password"],
 input[name="username"],
@@ -251,7 +222,6 @@ input[type="password"]:focus {
   box-shadow: 0 0 0 3px rgba(121,172,120,0.18), 0 2px 8px rgba(58,77,57,0.08);
 }
 
-/* Botão */
 button[type="submit"], .btn-primary {
   width: 100%;
   padding: 0.85rem 1.4rem;
@@ -299,17 +269,12 @@ button[type="submit"]:active, .btn-primary:active {
   letter-spacing: 0.04em;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   DASHBOARD PAGE
-   ───────────────────────────────────────────────────────── */
-
 .dashboard-wrapper {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-/* Topbar */
 .topbar {
   display: flex;
   align-items: center;
@@ -353,7 +318,6 @@ button[type="submit"]:active, .btn-primary:active {
   border-radius: 100px;
 }
 
-/* Conteúdo */
 .dashboard-content {
   flex: 1;
   padding: 2rem 2rem 3rem;
@@ -364,7 +328,6 @@ button[type="submit"]:active, .btn-primary:active {
   z-index: 1;
 }
 
-/* Header */
 .dashboard-header {
   margin-bottom: 1.8rem;
   animation: fadeUp 0.4s ease both;
@@ -384,7 +347,6 @@ button[type="submit"]:active, .btn-primary:active {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── h2 e h3 no contexto do dashboard HTML original ───────── */
 body > h2 {
   font-family: var(--font-display);
   font-style: italic;
@@ -420,7 +382,6 @@ h3 {
   animation: fadeUp 0.4s 0.08s ease both;
 }
 
-/* Ponto pulsante de status */
 h3::before {
   content: '';
   width: 8px; height: 8px;
@@ -445,7 +406,6 @@ h3::before {
   letter-spacing: -0.01em;
 }
 
-/* ── h4 dos gráficos ───────────────────────────────────────── */
 h4 {
   font-size: 0.68rem;
   letter-spacing: 0.1em;
@@ -467,7 +427,6 @@ h4::before {
   flex-shrink: 0;
 }
 
-/* h4 no nível do body (sem wrapper de card) */
 body > h4 {
   max-width: 1200px;
   margin: 1.8rem auto 0.9rem;
@@ -477,7 +436,6 @@ body > h4 {
   animation: fadeUp 0.4s 0.14s ease both;
 }
 
-/* ── Seção de gráficos ─────────────────────────────────────── */
 .charts-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -491,7 +449,6 @@ body > h4 {
   body > h2, h3, body > h4 { padding-left: 1.2rem; padding-right: 1.2rem; margin-left: 0; margin-right: 0; }
 }
 
-/* Cards de gráfico */
 .chart-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -508,14 +465,12 @@ body > h4 {
   box-shadow: 0 8px 32px rgba(0,0,0,0.25), 0 0 0 1px rgba(176,217,177,0.08);
 }
 
-/* Canvas Chart.js */
 canvas {
   display: block;
   width: 100% !important;
   max-height: 280px;
 }
 
-/* Canvas soltos no body (sem card wrapper) */
 body > canvas {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -528,7 +483,6 @@ body > canvas {
   display: block;
 }
 
-/* ── Chips / badges utilitários ────────────────────────────── */
 .chip {
   display: inline-flex; align-items: center; gap: 0.35rem;
   padding: 0.28rem 0.75rem;
@@ -548,11 +502,9 @@ body > canvas {
   border: 1px solid rgba(200,169,110,0.25);
 }
 
-/* ── Scrollbar ─────────────────────────────────────────────── */
 ::-webkit-scrollbar              { width: 5px; }
 ::-webkit-scrollbar-track        { background: var(--bg-base); }
 ::-webkit-scrollbar-thumb        { background: var(--green-deep); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover  { background: var(--green-mid); }
 
-/* ── Seleção ───────────────────────────────────────────────── */
 ::selection { background: rgba(121,172,120,0.28); color: var(--white); }
