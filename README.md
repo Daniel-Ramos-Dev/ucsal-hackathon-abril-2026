@@ -1,33 +1,71 @@
-# ucsal-hackathon-abril-2026
+Monitoramento Inteligente da Qualidade do Ar
 
-Objetivo de software
+Objetivo do Software
+O projeto tem como objetivo desenvolver um sistema inteligente de monitoramento da qualidade do ar em tempo real, capaz de identificar focos de poluição e fornecer dados precisos sobre as condições ambientais de uma determinada região.
 
-O objetivo do projeto é desenvolver um software capaz de analisar a poluição em tempo real podendo assim descobrir focos de poluição podendo dar dados precisos e em tempo real dos principais pontos de poluição de determinada região, sendo captados por meio de um sistema embarcado usando arduino, que fará essa analise de dados, separando os gases poluentes do ar, e definindo sua quantidade e o nivel de poluição do ambiente levando esses dados para serem tratados e refinados no software, assim mostrando em dashboards inteligentes e planilhas automatizadas em tempo real, mostrando assim de maneira simples e objetiva o nivél de poluição ou pureza de determinada area ou local especifico. Juntamente com esse projeto, trazemos também a nossa segunda parte que seria a coleta desses poluentes de maneira mais eficiente, pois de onde tem poluição tem um poluente e o objetivo dessa segunda parte é coletar de maneira fisica e tratar esses poluentes levando para um local correto para descarte e/ou reciclagem de tais materiais. Com base nos dados fornecidos pelo software poderemos traçar rotas e planejamentos mais eficientes, para essas coletas evitando custos, percursos e tempos gastos desnecessariamente, assim melhorando a eficiencia e produtividade como um todo.
+A coleta de dados é realizada por meio de um sistema embarcado baseado em Arduino, equipado com sensores capazes de detectar a presença de gases poluentes e estimar o nível geral de poluição do ambiente. Esses dados são enviados para um sistema central, onde são processados, organizados e apresentados por meio de dashboards e visualizações em tempo real.
 
-Nosso principal diferencial é a sustentabilidade pois o sistema embarcado é feito de arduino e toda sua carcaça é feita com uma fonte de energia antiga reciclada, além de ter um custo bastante baixo custando menos de R$ 300,00.
+A proposta do sistema é transformar dados brutos em informações claras e acionáveis, permitindo a identificação de áreas críticas e facilitando a tomada de decisão.
 
-A principio para o hackathon o que iremos desenvolver será apenas o sistema embarcado e o software em especifico, deixando a segunda parte de coleta e coleta/reciclagem para uma próxima etapa.
+> Extensão do Projeto:** Propõe-se uma segunda etapa voltada à otimização da coleta e tratamento de resíduos. A partir dos dados gerados, é possível mapear regiões com maior incidência de poluentes e planejar rotas mais eficientes de coleta, reduzindo custos operacionais, tempo de deslocamento e impacto ambiental.
 
-Requisitos de software
+---
 
-Arduino (HARDWARE):
-  1. Placa arduino UNO
-  2. JUMPERS Femea e macho
-  3. Sensor MQ3-135
-  4. lED Semaforo
-  5. Fonte de energia antiga
-  6. Cabo de alimentação/transferencia de dados da placa do arduino UNO
+Diferenciais
+- **Monitoramento em tempo real** da qualidade do ar.
+- **Baixo custo de implementação** (inferior a R$ 300).
+- **Uso de hardware acessível** (Arduino).
+- **Sustentabilidade:** Estrutura física baseada em reaproveitamento de componentes.
+- **Escalabilidade:** Possibilidade de expansão para sistemas de coleta inteligente.
 
-Produto (SOFTWARE):
-  1. BACKEND:  
-    1. Backend do arduino: calculo de poluição, classificação dos niveis, tabela de niveis de poluição, definição de tempo de mersão dos dados, divisão para puxar os gases presentes no ar e suas quantidades e quantidade geral do nivel de poluição.
-    2. Backend do sistema: método para puxar os dados que a placa (arduino UNO) envia, convertendo em tabelas e dashboards inteligentes, separando por gases especificos e suas quantidades e poluição geral (boa, media, ruim), mapa de poluição em tempo real e os niveis de poluição por meio de envio de coordenadas ao iniciar o sistema.
+---
 
-Produto (FRONTEND)
+Escopo do Hackathon
+Para o contexto do hackathon, o foco do desenvolvimento está nas seguintes frentes:
+1. Sistema embarcado para coleta de dados ambientais.
+2. Backend para processamento e organização dos dados.
+3. Interface para visualização em tempo real.
 
-  1. FRONTEND: Desenvolver um indentidade visual pro sistema, atentando-se aos aspectos culturais e relacionados ao meio ambiente, mantendo um padrão na paleta de cores, deixar o sistema mais intuitivo e visual possivel, levando talvez a um sistema mais simples para maior entendimento geral do publico, desing dos graficos e dashboards, desenvolvimento do mapa e seu estilo, gerenciar animações e transições do site para deixar mais fluido e rapido possivel.
-  2. Desing (IDENTIDADE VISUAL DO PROJETO)
-       1. Logo
-       2. Paleta de cores
-       3. Nome
-       4. Slogan
+*Nota: A etapa de coleta física e reciclagem será considerada como evolução futura do projeto.*
+
+---
+
+Arquitetura do Sistema
+O fluxo de dados do sistema segue a seguinte estrutura:
+
+`Data Source (Arduino)` ➔ `Máquina Local` ➔ `Servidor (Software)` ➔ `Visualização (Dashboard / Cliente)`
+
+---
+
+## 📋 Requisitos
+
+### 🛠️ Hardware
+- Arduino Uno
+- Sensor MQ-135
+- LEDs indicadores (Verde, Amarelo e Vermelho)
+- Jumpers (Macho e Fêmea)
+- Fonte de energia reutilizada
+- Cabo USB para alimentação e comunicação
+
+Software
+
+Backend
+- Leitura e interpretação dos dados enviados pelo Arduino.
+- Classificação dos níveis de poluição (Satisfatório, Moderado, Crítico).
+- Armazenamento dos dados em formato estruturado (CSV).
+- Geração de dados para visualização em tempo real.
+- Organização das informações por tempo e localização.
+
+Frontend
+- Dashboard com gráficos em tempo real.
+- Visualização histórica dos dados coletados.
+- Interface simples e objetiva para interpretação dos dados.
+- Estrutura preparada para integração com mapas e múltiplos sensores.
+
+---
+
+Design e Identidade Visual
+- Desenvolvimento de identidade visual alinhada ao tema ambiental.
+- Definição de paleta de cores coerente com o propósito do projeto.
+- Criação de logo, nome e slogan.
+- Foco em **clareza, legibilidade e usabilidade**.
