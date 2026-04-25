@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ecolytix — Monitoramento Ambiental IoT</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <style>
+    * , *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg0: #040b05;
+      --bg1: #0D1F0F;
+      --bg2: #101e12;
+      --bg3: #172a1a;
+      --bg4: #1e3522;
+      --green: #2E7D32;
+      --greenl: #43a047;
+      --neon: #00E676;
+      --neond: #00c853;
+      --text: #e8f5e9;
+      --text2: #a5d6a7;
+      --text3: #5da362;
+      --text4: #304d33;
+      --border: #182d1b;
+      --borderl: #243d28;
+      --red: #ef5350;
+      --rdbg: rgba(239, 83, 80, .09);
+      --yellow: #ffca28;
+      --ylbg: rgba(255, 202, 40, .08);
+      --card: #0c1e0e;
+      --card2: #0f2211;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg0);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg1);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--green);
+      border-radius: 3px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━ LOGO ━━━━━━━━━━━━━━━━━━━━━ */
+    .logo-img {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      object-fit: contain;
+      background: linear-gradient(135deg, var(--green), var(--neond));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 0 14px rgba(0, 230, 118, .3);
+    }
+
+    .logo-img-lg {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      box-shadow: 0 0 22px rgba(0, 230, 118, .35);
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━ LOGIN ━━━━━━━━━━━━━━━━━━━━━ */
+    #login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: stretch;
+      background: var(--bg0);
+    }
+
+    .login-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 56px;
+      background: linear-gradient(160deg, #060f07 0%, #0D1F0F 60%, #0f2411 100%);
+      border-right: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-left-art {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse 70% 70% at 30% 60%, rgba(0, 230, 118, .05) 0%, transparent 70%);
+    }
+
+    .login-left-grid {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(0, 230, 118, .02) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 230, 118, .02) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+
+    .login-left-content {
+      position: relative;
+      z-index: 1;
+      max-width: 440px;
+    }
+
+    .ll-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    .ll-brand {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -.4px;
+    }
+
+    .ll-brand b {
+      color: var(--neon);
+    }
+
+    .ll-heading {
+      font-size: 38px;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 20px;
+      letter-spacing: -.5px;
+    }
+
+    .ll-heading span {
+      color: var(--neon);
+    }
+
+    .ll-desc {
+      font-size: 16px;
+      color: var(--text2);
+      line-height: 1.75;
+      margin-bottom: 40px;
+    }
+
+    .ll-tags {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .ll-tag {
+      background: rgba(0, 230, 118, .08);
+      border: 1px solid rgba(0, 230, 118, .18);
+      color: var(--neon);
+      border-radius: 99px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .ll-fundacao {
+      margin-top: auto;
+      padding-top: 40px;
+      font-size: 12px;
+      color: var(--text3);
+      border-top: 1px solid var(--border);
+      margin-bottom: 0;
+    }
+
+    .ll-fundacao strong {
+      color: var(--neon);
+    }
+
+    .login-right {
+      width: 460px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 44px;
+      background: var(--card);
+      flex-shrink: 0;
+    }
+
+    .lr-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+      letter-spacing: -.3px;
+    }
+
+    .lr-sub {
+      font-size: 14px;
+      color: var(--text3);
+      margin-bottom: 28px;
+    }
+
+    .field {
+      position: relative;
+      margin-bottom: 13px;
+      width: 100%;
+    }
+
+    .fi {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 17px;
+      height: 17px;
+      stroke: var(--text3);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      pointer-events: none;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 12px 14px 12px 42px;
+      background: var(--bg2);
+      border: 1px solid var(--borderl);
+      border-radius: 11px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .field input::placeholder {
+      color: var(--text4);
+    }
+
+    .field input:focus {
+      border-color: var(--neon);
+      box-shadow: 0 0 0 3px rgba(0, 230, 118, .1);
+    }
+
+    .demo-hint {
+      background: rgba(0, 230, 118, .05);
+      border: 1px solid rgba(0, 230, 118, .15);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: var(--text3);
+      margin-bottom: 14px;
+      width: 100%;
+      line-height: 1.6;
+    }
+
+    .demo-hint strong {
+      color: var(--neon);
+    }
+
+    .lerr {
+      background: var(--rdbg);
+      border: 1px solid rgba(239, 83, 80, .25);
+      border-radius: 10px;
+      padding: 9px 14px;
+      color: var(--red);
+      font-size: 13px;
+      margin-bottom: 13px;
+      width: 100%;
+      display: none;
+      animation: shake .35s ease;
+    }
+
+    .lerr.show {
+      display: block;
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      25%,
+      75% {
+        transform: translateX(-5px);
+      }
+
+      50% {
+        transform: translateX(5px);
+      }
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 11px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-p {
+      background: linear-gradient(135deg, var(--green), var(--neond));
+      color: #fff;
+    }
+
+    .btn-p:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(0, 230, 118, .25);
+    }
+
+    .btn-p:active {
+      transform: none;
+    }
+
+    .btn-o {
+      background: transparent;
+      border: 1px solid var(--borderl);
+      color: var(--text2);
+      margin-top: 9px;
+    }
+
+    .btn-o:hover {
+      border-color: var(--neon);
+      color: var(--neon);
+      background: rgba(0, 230, 118, .04);
+    }
+
+    .btn-g {
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid var(--borderl);
+      color: var(--text2);
+      margin-top: 9px;
+    }
+
+    .btn-g:hover {
+      background: rgba(255, 255, 255, .07);
+    }
+
+    .btn-trial {
+      background: transparent;
+      border: none;
+      color: var(--text3);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      margin-top: 18px;
+      padding: 6px;
+      transition: color .2s;
+      width: 100%;
+      text-align: center;
+    }
+
+    .btn-trial:hover {
+      color: var(--neon);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 16px 0;
+      color: var(--text4);
+      font-size: 11px;
+      width: 100%;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .lspin {
+      width: 17px;
+      height: 17px;
+      border: 2px solid rgba(255, 255, 255, .25);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media(max-width:800px) {
+      #login-screen {
+        flex-direction: column;
+      }
+
+      .login-left {
+        padding: 32px 24px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .login-right {
+        width: 100%;
+        padding: 28px 20px;
+      }
+
+      .ll-heading {
+        font-size: 26px;
+      }
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━ APP ━━━━━━━━━━━━━━━━━━━━━ */
+    #app {
+      display: none;
+      min-height: 100vh;
+    }
+
+    /* Trial banner */
+    .trial-banner {
+      background: rgba(255, 202, 40, .08);
+      border-bottom: 1px solid rgba(255, 202, 40, .18);
+      padding: 8px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--yellow);
+    }
+
+    .trial-banner.hidden {
+      display: none;
+    }
+
+    .trial-banner strong {
+      color: var(--yellow);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 220px;
+      background: var(--bg1);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      z-index: 200;
+      transition: transform .27s;
+    }
+
+    .sb-logo {
+      padding: 20px 16px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sb-brand {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -.3px;
+    }
+
+    .sb-brand b {
+      color: var(--neon);
+    }
+
+    .sb-nav {
+      flex: 1;
+      padding: 12px 10px;
+      overflow-y: auto;
+    }
+
+    .sb-lbl {
+      font-size: 10px;
+      color: var(--text4);
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 12px 10px 4px;
+    }
+
+    .nitem {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 11px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all .16s;
+      color: var(--text2);
+      font-size: 13px;
+      font-weight: 500;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font-family: 'DM Sans', sans-serif;
+      position: relative;
+    }
+
+    .nitem:hover {
+      background: var(--bg3);
+      color: var(--text);
+    }
+
+    .nitem.active {
+      background: rgba(0, 230, 118, .09);
+      color: var(--neon);
+      box-shadow: inset 3px 0 0 var(--neon);
+    }
+
+    .nitem svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    .nitem .lock-ico {
+      position: absolute;
+      right: 10px;
+      opacity: .4;
+      font-size: 11px;
+    }
+
+    .sb-foot {
+      padding: 12px 10px;
+      border-top: 1px solid var(--border);
+    }
+
+    .conn-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 11px;
+      border-radius: 8px;
+      background: var(--bg2);
+      font-size: 12px;
+      color: var(--text2);
+      margin-bottom: 8px;
+    }
+
+    .cdot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      transition: background .3s;
+    }
+
+    .c-on {
+      background: var(--neon);
+      box-shadow: 0 0 7px var(--neon);
+    }
+
+    .c-sv {
+      background: var(--yellow);
+    }
+
+    .c-off {
+      background: var(--red);
+    }
+
+    .c-conn {
+      background: #42a5f5;
+      animation: blink .9s infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: .35;
+      }
+    }
+
+    .btn-logout {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 11px;
+      border-radius: 9px;
+      background: none;
+      border: 1px solid var(--borderl);
+      color: var(--text3);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all .2s;
+      width: 100%;
+    }
+
+    .btn-logout:hover {
+      border-color: var(--red);
+      color: var(--red);
+      background: var(--rdbg);
+    }
+
+    .btn-logout svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Topbar */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 220px;
+      right: 0;
+      height: 55px;
+      background: rgba(12, 30, 14, .94);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      transition: left .27s;
+    }
+
+    .tb-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tb-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .tb-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tb-time {
+      font-size: 11px;
+      color: var(--text3);
+      font-weight: 500;
+    }
+
+    .tb-user {
+      font-size: 12px;
+      color: var(--text2);
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: 4px 12px;
+    }
+
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 5px;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 18px;
+      height: 2px;
+      background: var(--text2);
+      border-radius: 2px;
+    }
+
+    /* Content */
+    .content {
+      margin-left: 220px;
+      padding-top: 55px;
+      min-height: 100vh;
+      transition: margin .27s;
+    }
+
+    .page {
+      padding: 24px;
+      display: none;
+      animation: pin .27s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes pin {
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    /* Page header */
+    .ph {
+      margin-bottom: 20px;
+    }
+
+    .ph-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .ph-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ph-sub {
+      font-size: 13px;
+      color: var(--text3);
+      margin-top: 3px;
+    }
+
+    .live-badge {
+      background: rgba(0, 230, 118, .1);
+      border: 1px solid rgba(0, 230, 118, .25);
+      border-radius: 99px;
+      padding: 3px 11px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--neon);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .live-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--neon);
+      border-radius: 50%;
+      animation: lp 1.4s infinite;
+    }
+
+    @keyframes lp {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: .4;
+      }
+    }
+
+    /* Notices */
+    .notice {
+      padding: 9px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .notice.show {
+      display: flex;
+    }
+
+    .notice.info {
+      background: var(--ylbg);
+      border: 1px solid rgba(255, 202, 40, .18);
+      color: var(--yellow);
+    }
+
+    .notice.err {
+      background: var(--rdbg);
+      border: 1px solid rgba(239, 83, 80, .25);
+      color: var(--red);
+    }
+
+    .notice.ok {
+      background: rgba(0, 230, 118, .07);
+      border: 1px solid rgba(0, 230, 118, .2);
+      color: var(--neon);
+    }
+
+    /* KPI */
+    .krow {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+      gap: 13px;
+      margin-bottom: 18px;
+    }
+
+    .kpi {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 17px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .kpi::after {
+      content: '';
+      position: absolute;
+      top: -18px;
+      right: -18px;
+      width: 70px;
+      height: 70px;
+      background: radial-gradient(circle, rgba(0, 230, 118, .045), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .kpi:hover {
+      transform: translateY(-2px);
+      border-color: var(--borderl);
+    }
+
+    .kpi-lbl {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: .7px;
+      margin-bottom: 6px;
+    }
+
+    .kpi-val {
+      font-size: 27px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .kpi-val .u {
+      font-size: 13px;
+      color: var(--text3);
+      font-weight: 400;
+    }
+
+    .kpi-note {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 6px;
+    }
+
+    .kv-neon {
+      color: var(--neon) !important;
+    }
+
+    .kv-red {
+      color: var(--red) !important;
+    }
+
+    .kv-yel {
+      color: var(--yellow) !important;
+    }
+
+    /* Chart card */
+    .cc {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      position: relative;
+    }
+
+    .cc-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .cc-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .cc canvas {
+      max-height: 190px;
+    }
+
+    /* Grid */
+    .g2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .g3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .ga {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    /* Loading overlay */
+    .lo {
+      position: absolute;
+      inset: 0;
+      background: var(--card);
+      border-radius: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 9px;
+      z-index: 8;
+      transition: opacity .3s;
+    }
+
+    .lo.gone {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loring {
+      width: 28px;
+      height: 28px;
+      border: 2.5px solid var(--bg3);
+      border-top-color: var(--neon);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+
+    .lotxt {
+      font-size: 12px;
+      color: var(--text3);
+    }
+
+    /* Status pill */
+    .spill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all .35s;
+    }
+
+    .sp-g {
+      background: rgba(0, 230, 118, .1);
+      color: var(--neon);
+      border: 1px solid rgba(0, 230, 118, .22);
+    }
+
+    .sp-y {
+      background: var(--ylbg);
+      color: var(--yellow);
+      border: 1px solid rgba(255, 202, 40, .22);
+    }
+
+    .sp-r {
+      background: var(--rdbg);
+      color: var(--red);
+      border: 1px solid rgba(239, 83, 80, .22);
+    }
+
+    .sp-empty {
+      background: var(--bg3);
+      color: var(--text3);
+      border: 1px solid var(--border);
+    }
+
+    .sdot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* AQI Hero */
+    .aqi-hero {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      text-align: center;
+    }
+
+    .aqi-ring {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      width: 132px;
+      height: 132px;
+      border-radius: 50%;
+      border: 3px solid var(--borderl);
+      box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+      margin: 16px auto;
+      transition: border-color .4s, box-shadow .4s;
+    }
+
+    .aqi-big {
+      font-size: 46px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .aqi-sub {
+      font-size: 10px;
+      color: var(--text3);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    .aqi-bar-t {
+      height: 6px;
+      background: var(--bg3);
+      border-radius: 99px;
+      overflow: hidden;
+      margin: 12px 0 6px;
+    }
+
+    .aqi-bar-f {
+      height: 100%;
+      border-radius: 99px;
+      width: 0;
+      transition: width .8s cubic-bezier(.34, 1.2, .64, 1), background .4s;
+    }
+
+    .aqi-txt {
+      font-size: 12px;
+      color: var(--text2);
+      font-style: italic;
+      min-height: 32px;
+      margin-top: 6px;
+    }
+
+    /* USB Connect button */
+    .usb-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border-radius: 10px;
+      background: rgba(0, 230, 118, .08);
+      border: 1px solid rgba(0, 230, 118, .25);
+      color: var(--neon);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .usb-btn:hover {
+      background: rgba(0, 230, 118, .14);
+      border-color: rgba(0, 230, 118, .4);
+    }
+
+    .usb-btn.connected {
+      background: rgba(0, 230, 118, .14);
+      border-color: var(--neon);
+    }
+
+    .usb-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Map */
+    .map-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .map-bar {
+      padding: 10px 14px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .fbtn {
+      padding: 5px 14px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--borderl);
+      background: var(--bg2);
+      color: var(--text3);
+      transition: all .16s;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .fbtn:hover,
+    .fbtn.active {
+      background: rgba(0, 230, 118, .1);
+      color: var(--neon);
+      border-color: rgba(0, 230, 118, .25);
+    }
+
+    #map {
+      height: 390px;
+    }
+
+    .leaflet-container {
+      background: #070f08 !important;
+    }
+
+    .leaflet-popup-content-wrapper {
+      background: var(--card) !important;
+      border: 1px solid var(--borderl) !important;
+      border-radius: 12px !important;
+      color: var(--text) !important;
+      font-family: 'DM Sans', sans-serif !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, .5) !important;
+    }
+
+    .leaflet-popup-tip {
+      background: var(--card) !important;
+    }
+
+    /* Residuos - form */
+    .form-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 160px auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    .form-input {
+      background: var(--bg2);
+      border: 1px solid var(--borderl);
+      border-radius: 9px;
+      padding: 10px 13px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    .form-input:focus {
+      border-color: var(--neon);
+      box-shadow: 0 0 0 2px rgba(0, 230, 118, .09);
+    }
+
+    .form-input option {
+      background: var(--bg2);
+    }
+
+    .btn-reg {
+      background: linear-gradient(135deg, var(--green), var(--neond));
+      color: #fff;
+      border: none;
+      border-radius: 9px;
+      padding: 10px 18px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      white-space: nowrap;
+    }
+
+    .btn-reg:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 14px rgba(0, 230, 118, .2);
+    }
+
+    /* Records list */
+    .rec-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 14px;
+      max-height: 320px;
+      overflow-y: auto;
+    }
+
+    .rec-item {
+      background: var(--bg2);
+      border: 1px solid var(--borderl);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: rIn .2s ease;
+    }
+
+    @keyframes rIn {
+      from {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .rec-region {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      flex: 1;
+    }
+
+    .rec-date {
+      font-size: 11px;
+      color: var(--text3);
+    }
+
+    .rec-level {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 99px;
+    }
+
+    .level-b {
+      background: rgba(0, 230, 118, .1);
+      color: var(--neon);
+    }
+
+    .level-m {
+      background: var(--ylbg);
+      color: var(--yellow);
+    }
+
+    .level-a {
+      background: var(--rdbg);
+      color: var(--red);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 24px;
+      color: var(--text3);
+      font-size: 13px;
+    }
+
+    /* Critical areas */
+    .clist {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .citem {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: border-color .2s;
+    }
+
+    .citem:hover {
+      border-color: var(--borderl);
+    }
+
+    .cdotc {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .cname {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      flex: 1;
+    }
+
+    .clv {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 99px;
+    }
+
+    /* Flow */
+    .flow-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .fnodes {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      margin: 16px 0;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .fnode {
+      text-align: center;
+      flex: 1;
+      min-width: 65px;
+    }
+
+    .ficon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 7px;
+      font-size: 20px;
+      border: 1px solid var(--borderl);
+      background: var(--bg2);
+    }
+
+    .fname {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    .farr {
+      color: var(--neon);
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    /* Residuos bars */
+    .res-bar-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 16px;
+    }
+
+    .rrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .ricn {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .rinfo {
+      flex: 1;
+    }
+
+    .rname {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .rbar {
+      height: 5px;
+      background: var(--bg3);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .rbf {
+      height: 100%;
+      border-radius: 99px;
+      transition: width .8s;
+    }
+
+    .rpct {
+      font-size: 12px;
+      font-weight: 600;
+      min-width: 32px;
+      text-align: right;
+    }
+
+    /* About */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 13px;
+      margin-top: 16px;
+    }
+
+    .tcard {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .tcard:hover {
+      border-color: rgba(0, 230, 118, .3);
+      transform: translateY(-2px);
+    }
+
+    .tico {
+      font-size: 24px;
+      margin-bottom: 9px;
+    }
+
+    .tname {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 5px;
+    }
+
+    .tdesc {
+      font-size: 12px;
+      color: var(--text2);
+      line-height: 1.6;
+    }
+
+    /* Arduino raw badge */
+    .raw-badge {
+      background: rgba(66, 165, 245, .08);
+      border: 1px solid rgba(66, 165, 245, .2);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 11px;
+      color: #42a5f5;
+      font-family: 'Courier New', monospace;
+    }
+
+    /* Responsive */
+    @media(max-width:880px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .topbar {
+        left: 0;
+      }
+
+      .content {
+        margin-left: 0;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .g2,
+      .g3 {
+        grid-template-columns: 1fr;
+      }
+
+      .page {
+        padding: 14px;
+      }
+
+      #map {
+        height: 270px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .sb-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .55);
+      z-index: 199;
+    }
+
+    .sb-overlay.show {
+      display: block;
+    }
+
+    @media(max-width:480px) {
+      .krow {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .aqi-ring {
+        width: 110px;
+        height: 110px;
+      }
+
+      .aqi-big {
+        font-size: 36px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="login-screen">
+    <div class="login-left">
+      <div class="login-left-art"></div>
+      <div class="login-left-grid"></div>
+      <div class="login-left-content">
+        <div class="ll-logo">
+          <canvas id="logo-canvas-login" width="52" height="52" class="logo-img logo-img-lg"></canvas>
+          <div>
+            <div class="ll-brand">Eco<b>lytix</b></div>
+            <div style="font-size:11px;color:var(--text3)">by Fundação 404</div>
+          </div>
+        </div>
+
+        <h1 class="ll-heading">Monitoramento ambiental <span>inteligente</span></h1>
+        <p class="ll-desc">
+          Plataforma IoT de monitoramento da qualidade do ar em tempo real.
+          O sistema utiliza sensores físicos Arduino para transformar dados ambientais brutos
+          em informações claras, visuais e acessíveis — com foco em impacto urbano real.
+        </p>
+        <div class="ll-tags">
+          <span class="ll-tag"> IoT Real</span>
+          <span class="ll-tag"> Open Data</span>
+          <span class="ll-tag"> Monitoramento Urbano</span>
+          <span class="ll-tag"> Arduino</span>
+        </div>
+
+        <div class="ll-fundacao" style="margin-top:40px">
+          Projeto desenvolvido pela <strong>Fundação 404</strong><br>
+          <span style="font-size:11px;opacity:.7">Tecnologia para um planeta mais saudável</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="login-right">
+      <canvas id="logo-canvas-right" width="44" height="44" class="logo-img" style="margin-bottom:14px"></canvas>
+      <div class="lr-title">Entrar na plataforma</div>
+      <div class="lr-sub">Acesse seu painel de monitoramento</div>
+
+      <div class="demo-hint">
+        <strong>Conta de demonstração</strong><br>
+        Email sugerido: <strong>usuario@ecolytix.com</strong><br>
+        Senha sugerida: <strong>ecolytix123</strong>
+      </div>
+
+      <div class="lerr" id="lerr">Credenciais inválidas. Verifique e tente novamente.</div>
+
+      <div class="field">
+        <svg class="fi" viewBox="0 0 24 24">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+          <polyline points="22,6 12,13 2,6" />
+        </svg>
+        <input type="text" id="lmail" placeholder="seu@email.com" autocomplete="username">
+      </div>
+      <div class="field">
+        <svg class="fi" viewBox="0 0 24 24">
+          <rect x="3" y="11" width="18" height="11" rx="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </svg>
+        <input type="password" id="lpass" placeholder="Senha" autocomplete="current-password">
+      </div>
+
+      <button class="btn btn-p" onclick="doLogin()">
+        <span id="ltxt">Entrar</span>
+        <div class="lspin" id="lspin"></div>
+      </button>
+      <button class="btn btn-o" onclick="alertInfo('Cadastro via formulário — disponível em breve na versão beta.')">Criar
+        conta</button>
+      <div class="divider">ou</div>
+      <button class="btn btn-g"
+        onclick="alertInfo('Login com Google OAuth — integração disponível em breve.')">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+            fill="#4285F4" />
+          <path
+            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+            fill="#34A853" />
+          <path
+            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+            fill="#FBBC05" />
+          <path
+            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+            fill="#EA4335" />
+        </svg>
+        Entrar com Google
+      </button>
+      <button class="btn-trial" onclick="enterTrial()">Continuar sem login (modo trial) →</button>
+
+      <div style="margin-top:20px;font-size:11px;color:var(--text4);text-align:center">
+        Projeto desenvolvido pela <span style="color:var(--text3)">Fundação 404</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="app">
+    <div class="sb-overlay" id="sbo" onclick="closeSb()"></div>
+
+    <div class="trial-banner hidden" id="trial-banner">
+      <strong>Modo Trial</strong> — Acesso limitado. Você está visualizando dados públicos apenas.
+      <button
+        style="background:none;border:1px solid var(--yellow);color:var(--yellow);border-radius:6px;padding:3px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px"
+        onclick="showLoginFromApp()">Fazer login completo →</button>
+    </div>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sb-logo">
+        <canvas id="logo-canvas-sb" width="32" height="32" class="logo-img"
+          style="width:32px;height:32px;border-radius:9px"></canvas>
+        <span class="sb-brand">Eco<b>lytix</b></span>
+      </div>
+      <nav class="sb-nav">
+        <div class="sb-lbl">Visão Geral</div>
+        <button class="nitem active" onclick="nav('home',this)">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>Home
+        </button>
+        <button class="nitem" onclick="nav('dashboard',this)">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+          </svg>Dashboard
+        </button>
+        <div class="sb-lbl">Monitoramento</div>
+        <button class="nitem" onclick="nav('mapa',this)">
+          <svg viewBox="0 0 24 24">
+            <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" />
+            <line x1="8" y1="2" x2="8" y2="18" />
+            <line x1="16" y1="6" x2="16" y2="22" />
+          </svg>Mapa
+        </button>
+        <button class="nitem" onclick="nav('ar',this)">
+          <svg viewBox="0 0 24 24">
+            <path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2" />
+            <path d="M9.6 4.6A2 2 0 1 1 11 8H2" />
+            <path d="M12.6 19.4A2 2 0 1 0 14 16H2" />
+          </svg>Qualidade do Ar
+        </button>
+        <button class="nitem" id="nav-residuos" onclick="navResiduo()">
+          <svg viewBox="0 0 24 24">
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+          </svg>Resíduos
+          <span class="lock-ico" id="lock-residuos"></span>
+        </button>
+        <div class="sb-lbl">Sistema</div>
+        <button class="nitem" onclick="nav('sobre',this)">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>Sobre
+        </button>
+      </nav>
+      <div class="sb-foot">
+        <div class="conn-pill">
+          <div class="cdot c-off" id="cdot"></div><span id="clbl">Sem sensor</span>
+        </div>
+        <button class="btn-logout" onclick="doLogout()">
+          <svg viewBox="0 0 24 24">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+          <span id="logout-txt">Sair</span>
+        </button>
+      </div>
+    </aside>
+
+    <header class="topbar">
+      <div class="tb-left">
+        <button class="hamburger" onclick="toggleSb()"><span></span><span></span><span></span></button>
+        <span class="tb-title" id="tbtitle">Home</span>
+      </div>
+      <div class="tb-right">
+        <span class="tb-time" id="tbtime"></span>
+        <span class="tb-user" id="tb-user">Trial</span>
+      </div>
+    </header>
+
+    <main class="content">
+      <div style="padding:0 24px">
+        <div class="notice info" id="notice"><span id="notice-txt"></span></div>
+      </div>
+
+      <div class="page active" id="page-home">
+        <div class="ph">
+          <div class="ph-row">
+            <div>
+              <div class="ph-title">Resumo <span class="live-badge">Ao vivo</span></div>
+              <div class="ph-sub">Ecolytix — Monitoramento ambiental IoT · Salvador, BA</div>
+            </div>
+            <button class="usb-btn" id="usb-btn" onclick="connectUSB()">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 2v14M5 9l7 7 7-7" />
+                <path d="M5 20h14" />
+              </svg>
+              <span id="usb-txt">Conectar Sensor</span>
+            </button>
+          </div>
+        </div>
+        <div class="krow">
+          <div class="kpi">
+            <div class="kpi-lbl">AQI do Sensor</div>
+            <div class="kpi-val" id="h-aqi">--</div>
+            <div class="kpi-note" id="h-aqi-note">Aguardando sensor...</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">Status</div>
+            <div class="kpi-val" id="h-status">--</div>
+            <div class="kpi-note" id="h-status-note">Sem dado</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">Leituras Sessão</div>
+            <div class="kpi-val kv-neon" id="h-leit">0</div>
+            <div class="kpi-note">Total recebido</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">Alertas</div>
+            <div class="kpi-val kv-red" id="h-alert">0</div>
+            <div class="kpi-note">Status vermelho</div>
+          </div>
+        </div>
+        <div class="g2">
+          <div class="cc" style="position:relative">
+            <div class="lo" id="lo-rt">
+              <div class="loring"></div>
+              <div class="lotxt">Aguardando sensor...</div>
+            </div>
+            <div class="cc-head">
+              <div class="cc-title">Leituras em tempo real</div>
+              <div class="live-badge">Sensor</div>
+            </div>
+            <canvas id="graficoTempo"></canvas>
+          </div>
+          <div class="cc" style="position:relative">
+            <div class="lo" id="lo-hist">
+              <div class="loring"></div>
+              <div class="lotxt">Sem histórico ainda</div>
+            </div>
+            <div class="cc-head">
+              <div class="cc-title">Histórico da sessão</div>
+            </div>
+            <canvas id="graficoHistorico"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-dashboard">
+        <div class="ph">
+          <div class="ph-title">Dashboard</div>
+          <div class="ph-sub">Fluxo do sistema IoT e KPIs</div>
+        </div>
+        <div class="krow">
+          <div class="kpi">
+            <div class="kpi-lbl">Leituras</div>
+            <div class="kpi-val kv-neon" id="d-leit">0</div>
+            <div class="kpi-note">Esta sessão</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">Alertas</div>
+            <div class="kpi-val kv-red" id="d-alert">0</div>
+            <div class="kpi-note">Status vermelho</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">Sensor USB</div>
+            <div class="kpi-val" id="d-sensor" style="font-size:16px">Desconectado</div>
+            <div class="kpi-note">Web Serial API</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">Último dado</div>
+            <div class="kpi-val" id="d-last" style="font-size:14px">--</div>
+            <div class="kpi-note" id="d-last-time">--</div>
+          </div>
+        </div>
+        <div class="flow-card">
+          <div class="cc-title">Arquitetura IoT</div>
+          <div class="fnodes">
+            <div class="fnode">
+              <div class="ficon" style="border-color:rgba(66,165,245,.3)"></div>
