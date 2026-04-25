@@ -1,20 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-  <title>AirSense</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AirSense · Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h2>AirSense Dashboard</h2>
+<header class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-icon">🌬️</div>
+    <span class="brand-name">Air<span>Sense</span></span>
+  </div>
+  <span class="topbar-env">Ecolytixr</span>
+</header>
 
-<h3>Status: <span id="status">--</span></h3>
+<main class="dashboard-wrapper">
+  <div class="dashboard-content">
 
-<h4>Tempo Real</h4>
-<canvas id="graficoTempo"></canvas>
+    <div class="dashboard-header">
+      <h2>AirSense Dashboard</h2>
+      <p>Monitoramento de qualidade do ar em tempo real.</p>
+    </div>
 
-<h4>Histórico</h4>
-<canvas id="graficoHistorico"></canvas>
+
+    <h3>Status:&nbsp;<span id="status">--</span></h3>
+
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h4>Tempo Real</h4>
+        <canvas id="graficoTempo"></canvas>
+      </div>
+      <div class="chart-card">
+        <h4>Histórico</h4>
+        <canvas id="graficoHistorico"></canvas>
+      </div>
+    </div>
+
+  </div>
+</main>
 
 <script src="/static/js/tempo_real.js"></script>
 <script src="/static/js/historico.js"></script>
